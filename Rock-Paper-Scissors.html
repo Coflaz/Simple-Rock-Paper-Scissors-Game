@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+</head>
+<body>
+    <p>
+        <button onclick="
+            computerChoice = computerPlay();
+            playerChoice = 'rock';
+            result = evaluateScore(playerChoice, computerChoice);
+            alertResult(playerChoice, computerChoice, result);
+            playerScoreUpdate(result);
+
+        ">Rock</button>
+
+        <button onclick="
+            computerChoice = computerPlay();
+            playerChoice = 'paper';
+            result = evaluateScore(playerChoice, computerChoice);
+            alertResult(playerChoice, computerChoice, result);
+            playerScoreUpdate(result);
+        ">Paper</button>
+
+        <button onclick="
+            computerChoice = computerPlay();
+            playerChoice = 'scissors';
+            result = evaluateScore(playerChoice, computerChoice);
+            alertResult(playerChoice, computerChoice, result);
+            playerScoreUpdate(result);
+        ">Scissors</button>
+    </p>
+    <p>
+        <button onclick="
+            showScores();
+        ">Show Scores</button>
+
+        <button onclick="
+            resetScores(); 
+        ">Reset Scores</button>
+
+        <button onclick="
+            saveScores();
+        ">Save Scores</button>
+
+        <button onclick="
+            continueGame();
+        ">Continue</button>
+    </p>
+
+    <script>
+        const player = {
+            win: 0,
+            lose: 0,
+            tie: 0
+        };
+
+        let playerChoice;
+        let computerChoice;
+
+        function computerPlay() {
+            let compNum = Math.random();
+            if (compNum <= 0.33) {
+                return 'rock';
+            } else if (compNum <= 0.66) {
+                return 'paper';
+            } else {
+                return 'scissors';
+            }
+        }
+
+
+        function evaluateScore(pChoice, cChoice) {
+            if (pChoice === cChoice) {
+                return 'tie';
+            } else if (pChoice === 'rock' && cChoice === 'paper') {
+                return 'lose';
+            } else if (pChoice === 'rock' && cChoice === 'scissors') {
+                return 'win';
+            } else if (pChoice === 'paper' && cChoice === 'rock') {
+                return 'win';
+            } else if (pChoice === 'paper' && cChoice === 'scissors') {
+                return 'lose';
+            } else if (pChoice === 'scissors' && cChoice === 'rock') {
+                return 'lose';
+            } else if (pChoice === 'scissors' && cChoice === 'paper') {
+                return 'win';
+            }
+        }
+
+        function playerScoreUpdate(result) {
+            if (result === 'win') {
+                player.win++;
+            } else if (result === 'lose') {
+                player.lose++;
+            } else {
+                player.tie++;
+            }
+        }
+
+        function alertResult(pChoice, cChoice, result) {
+            if (result === 'tie') {
+                alert(`You choce ${pChoice} and the computer chose ${cChoice}. It's a ${result}!`);
+            } else {
+                alert(`You choce ${pChoice} and the computer chose ${cChoice}. You ${result}!`);
+            }
+        }
+
+        function showScores() {
+            alert(`Win: ${player.win}\nLose: ${player.lose}\nTie: ${player.tie}`);
+        }
+
+        function resetScores() {
+            player.win = 0;
+            player.lose = 0;
+            player.tie = 0;
+            alert(`Win: ${player.win}\nLose: ${player.lose}\nTie: ${player.tie}`);
+        }
+
+        function saveScores() {
+            localStorage.setItem('playerData', JSON.stringify(player));
+            alert(`Scores saved successfully`);
+        }
+
+        function continueGame() {
+            playerObj = JSON.parse(localStorage.getItem('playerData'));
+            player.win = playerObj.win;
+            player.lose = playerObj.lose;
+            player.tie = playerObj.tie;
+            alert(`Win: ${player.win}\nLose: ${player.lose}\nTie: ${player.tie} \n Just where you left off!`);
+        }
+    </script>
+</body>
+</html>
