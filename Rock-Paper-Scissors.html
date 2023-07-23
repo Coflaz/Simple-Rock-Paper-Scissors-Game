@@ -3,46 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rock Paper Scissors</title>
-    <style>
-        /*
-        I didn't add any CSS files.
-        Interested in interesting ideas.
-        */
-    </style>
+    <title>Updated Rock Paper Scissors</title>
 </head>
 <body>
+    <p>Rock Paper Scissors</p>
     <p>
-        <button onclick="
+        <button class="rock" onclick="
+            playerChoice = `rock`;
             computerChoice = computerPlay();
-            playerChoice = 'rock';
-            result = evaluateScore(playerChoice, computerChoice);
-            alertResult(playerChoice, computerChoice, result);
-            playerScoreUpdate(result);
-
+            result = winLoseTie(playerChoice, computerChoice);
+            gameResultChange(result);
+            gameSituationChange(playerChoice, computerChoice, result);
+            scoreTableChange();
         ">Rock</button>
 
-        <button onclick="
+        <button class="paper" onclick="
+            playerChoice = `paper`;
             computerChoice = computerPlay();
-            playerChoice = 'paper';
-            result = evaluateScore(playerChoice, computerChoice);
-            alertResult(playerChoice, computerChoice, result);
-            playerScoreUpdate(result);
+            result = winLoseTie(playerChoice, computerChoice);
+            gameResultChange(result);
+            gameSituationChange(playerChoice, computerChoice, result);
+            scoreTableChange();
         ">Paper</button>
 
-        <button onclick="
+        <button class="scissors" onclick="
+            playerChoice = `scissors`;
             computerChoice = computerPlay();
-            playerChoice = 'scissors';
-            result = evaluateScore(playerChoice, computerChoice);
-            alertResult(playerChoice, computerChoice, result);
-            playerScoreUpdate(result);
+            result = winLoseTie(playerChoice, computerChoice);
+            gameResultChange(result);
+            gameSituationChange(playerChoice, computerChoice, result);
+            scoreTableChange();
         ">Scissors</button>
-    </p>
-    <p>
-        <button onclick="
-            showScores();
-        ">Show Scores</button>
 
+    </p>
+    <p class="game-result"></p>
+    <p class="game-situation"></p>
+    <p class="score-table"></p>
+    <p>
         <button onclick="
             resetScores(); 
         ">Reset Scores</button>
@@ -55,8 +52,10 @@
             continueGame();
         ">Continue</button>
     </p>
-
+    <p class="game-saved-continues"></p>
+    
     <script>
+        
         const player = {
             win: 0,
             lose: 0,
@@ -65,77 +64,98 @@
 
         let playerChoice;
         let computerChoice;
+        let result;
 
         function computerPlay() {
-            let compNum = Math.random();
-            if (compNum <= 0.33) {
+            let computerChoiceNum = Math.random();
+            if (computerChoiceNum < 0.34) {
                 return 'rock';
-            } else if (compNum <= 0.66) {
+            } else if (computerChoiceNum <= 0.67) {
                 return 'paper';
             } else {
                 return 'scissors';
             }
         }
 
+        function scoreTableChange() {
+            const scoreTableElement = document.querySelector('.score-table');
+            scoreTableElement.innerHTML = `Player: ${player.win} | Computer: ${player.lose} | Tie: ${player.tie}`;
+        }
 
-        function evaluateScore(pChoice, cChoice) {
-            if (pChoice === cChoice) {
-                return 'tie';
-            } else if (pChoice === 'rock' && cChoice === 'paper') {
-                return 'lose';
-            } else if (pChoice === 'rock' && cChoice === 'scissors') {
-                return 'win';
-            } else if (pChoice === 'paper' && cChoice === 'rock') {
-                return 'win';
-            } else if (pChoice === 'paper' && cChoice === 'scissors') {
-                return 'lose';
-            } else if (pChoice === 'scissors' && cChoice === 'rock') {
-                return 'lose';
-            } else if (pChoice === 'scissors' && cChoice === 'paper') {
-                return 'win';
+        function gameSituationChange(playerChoice, computerChoice, result) {
+            const gameSituationElement = document.querySelector(`.game-situation`);
+            if (result === `tie`) {
+                gameSituationElement.innerHTML = `Player chose ${playerChoice} | Computer chose ${computerChoice} | It is a ${result}`;
+            } else {
+                gameSituationElement.innerHTML = `Player chose ${playerChoice} | Computer chose ${computerChoice} | Player ${result}s!`;
             }
         }
 
-        function playerScoreUpdate(result) {
-            if (result === 'win') {
-                player.win++;
-            } else if (result === 'lose') {
-                player.lose++;
+        function gameResultChange(result) {
+            const gameResultChangeElement = document.querySelector(`.game-result`);
+            if (result === `tie`) {
+                gameResultChangeElement.innerHTML = `It is a ${result}`;
             } else {
+                gameResultChangeElement.innerHTML = `Player ${result}s!`;
+            }
+        }
+
+        function winLoseTie(playerChoice, computerChoice) {
+            if (playerChoice === computerChoice) {
                 player.tie++;
+                return `tie`;
+            } else if (playerChoice === `rock`) {
+                if (computerChoice === `paper`) {
+                    player.lose++;
+                    return `lose`;
+                } else {
+                    player.win++;
+                    return `win`;
+                }
+            } else if (playerChoice === `paper`) {
+                if (computerChoice === `scissors`) {
+                    player.lose++;
+                    return `lose`;
+                } else {
+                    player.win++;
+                    return `win`;
+                }
+            } else if (playerChoice === `scissors`) {
+                if (computerChoice === `rock`) {
+                    player.lose++;
+                    return `lose`;
+                } else {
+                    player.win++;
+                    return `win`;
+                }
             }
-        }
-
-        function alertResult(pChoice, cChoice, result) {
-            if (result === 'tie') {
-                alert(`You choce ${pChoice} and the computer chose ${cChoice}. It's a ${result}!`);
-            } else {
-                alert(`You choce ${pChoice} and the computer chose ${cChoice}. You ${result}!`);
-            }
-        }
-
-        function showScores() {
-            alert(`Win: ${player.win}\nLose: ${player.lose}\nTie: ${player.tie}`);
         }
 
         function resetScores() {
             player.win = 0;
             player.lose = 0;
             player.tie = 0;
-            alert(`Win: ${player.win}\nLose: ${player.lose}\nTie: ${player.tie}`);
+
+            scoreTableChange();
+
+            const gameResultChangeElement = document.querySelector(`.game-result`);
+            gameResultChangeElement.innerHTML = ``;
+
+            const gameSituationChangeElement = document.querySelector(`.game-situation`);
+            gameSituationChangeElement.innerHTML = ``;
         }
 
         function saveScores() {
-            localStorage.setItem('playerData', JSON.stringify(player));
-            alert(`Scores saved successfully`);
+            localStorage.setItem('player', JSON.stringify(player));
         }
 
         function continueGame() {
-            playerObj = JSON.parse(localStorage.getItem('playerData'));
-            player.win = playerObj.win;
-            player.lose = playerObj.lose;
-            player.tie = playerObj.tie;
-            alert(`Win: ${player.win}\nLose: ${player.lose}\nTie: ${player.tie} \n Just where you left off!`);
+            const playerData = JSON.parse(localStorage.getItem('player'));
+            player.win = playerData.win;
+            player.lose = playerData.lose;
+            player.tie = playerData.tie;
+
+            scoreTableChange();
         }
     </script>
 </body>
